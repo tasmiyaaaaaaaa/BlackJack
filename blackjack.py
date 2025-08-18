@@ -1,4 +1,9 @@
 import random
+from colorama import Fore, Style, init
+init()
+
+print(Fore.YELLOW + "\nWELCOME TO THE GAME BESTIEEE!!!")
+print("\nGame Rules:\n*no blushing*\n*no giggling*\n*no smiling*"+ Style.RESET_ALL)
 
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
@@ -53,15 +58,75 @@ class Hand():
             self.value-= 10
             self.aces-= 1     
 
-deck = Deck()
-deck.shuffle()
+def show_hand(hand, who="player", all_cards = True):
+    print(f"\n{who}'s hand:")
+    if who == "dealer" and all_cards == False:
+        print(hand.cards[0], ", <hidden card>")
+    else:
+        for card in hand.cards:
+            print(card)
+        print("\nvalue:", hand.value)
 
-player = Hand()
-player.add_card(deck.deal())
-player.add_card(deck.deal())
+def player_hit(hand):
+    hand.add_card(deck.deal())
+    print("current value:", hand.value)
 
-dealer = Hand()
-dealer.add_card(deck.deal())
-dealer.add_card(deck.deal())
+    if hand.value > 21:
+        print(Fore.RED + "Player busts...😔😔😔😔"+ Style.RESET_ALL)
+        print(Fore.CYAN + "DEALER WINSSSS"+ Style.RESET_ALL)
 
+def dealer_hit(hand):
+    while hand.value < 17:
+        hand.add_card(deck.deal())
+        print("current value:", hand.value)
+
+game_on = True
+
+while game_on: 
+
+    deck = Deck()
+    deck.shuffle()
+
+    player_hand = Hand()
+    player_hand.add_card(deck.deal())
+    player_hand.add_card(deck.deal())
+
+    dealer_hand = Hand()
+    dealer_hand.add_card(deck.deal())
+    dealer_hand.add_card(deck.deal())
+
+    show_hand(player_hand,"player")
+    show_hand(dealer_hand, "dealer", False)  
+
+    while player_hand.value < 21:
+        player_input = input("\nDo you wanna hit? \n enter y/n:").lower()
+        if player_input == "y":
+            player_hit(player_hand)
+            print()
+            show_hand(player_hand)
+        else:
+            print("player has decided to stay")
+            break
+
+    print("\nit is now the dealer's turn")
+    
+    if player_hand.value <= 21:
+        dealer_hit(dealer_hand)
+        print()
+        show_hand(dealer_hand, "dealer")
+
+        if dealer_hand.value > 21:
+            print(Fore.MAGENTA + "Dealer BUSTS! Player wins 🎉🎉🎉🎉🎉"+ Style.RESET_ALL)
+        elif dealer_hand.value > player_hand.value:
+            print(Fore.GREEN + "Dealer wins 😔😔😔😔😔😔"+ Style.RESET_ALL)
+        elif dealer_hand.value < player_hand.value:
+            print(Fore.MAGENTA+ "Player wins 🎉🎉🎉🎉🎉🎉"+ Style.RESET_ALL)
+        else:
+            print(Fore.LIGHTMAGENTA_EX + "It's a tie! 🤝🤝🤝🤝🤝🤝🤝 *pretty sure dealer cheated-*"+ Style.RESET_ALL)
+    
+    player = input("\ndo you wanna play another round? \n enter y/n:").lower()
+    if player == "n":
+        game_on = False
+    else:
+        continue
 
