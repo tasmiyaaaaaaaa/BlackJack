@@ -33,6 +33,35 @@ class Deck():
 
     def deal(self):
         single_card = self.deck.pop()
-        return single_card
-    
+        return single_card    
+
+class Hand():
+    def __init__(self):
+        self.cards = []
+        self.value = 0
+        self.aces = 0
+
+    def add_card(self, card):
+        self.cards.append(card)
+        self.value+= values[card.rank]
+        if card.rank == "Ace" :
+            self.aces+=1
+        self.handle_ace()
+        
+    def handle_ace(self):
+        while self.aces > 0 and self.value > 21:  
+            self.value-= 10
+            self.aces-= 1     
+
+deck = Deck()
+deck.shuffle()
+
+player = Hand()
+player.add_card(deck.deal())
+player.add_card(deck.deal())
+
+dealer = Hand()
+dealer.add_card(deck.deal())
+dealer.add_card(deck.deal())
+
 
